@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Medical Report Explainer</title>
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+    <header class="header">
+        <div class="logo">
+            <span class="logo-icon">🩺</span>
+            <div>
+                <h1>Medical Report Explainer</h1>
+                <p>Understand your medical reports in simple language</p>
+            </div>
+        </div>
+
+        <div class="language-box">
+            <label for="language">Language</label>
+
+            <select id="language">
+                <option value="English">English</option>
+                <option value="Telugu">Telugu</option>
+                <option value="Hindi">Hindi</option>
+            </select>
+        </div>
+    </header>
+
+
+    <!-- ================= MAIN ================= -->
+    <main class="container">
+
+        <!-- INTRODUCTION -->
+        <section class="hero-section">
+
+            <div class="hero-content">
+
+                <span class="badge">✨ AI Powered</span>
+
+                <h2>
+                    Turn complicated medical reports
+                    <span>into simple explanations</span>
+                </h2>
+
+                <p>
+                    Upload your medical report or paste the report text.
+                    Our AI will explain the information in easy-to-understand
+                    language.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= REPORT INPUT ================= -->
+        <section class="card">
+
+            <div class="section-title">
+                <div class="title-icon">📄</div>
+
+                <div>
+                    <h3>Your Medical Report</h3>
+                    <p>Upload a PDF or paste your report below</p>
+                </div>
+            </div>
+
+
+            <!-- PDF UPLOAD -->
+            <div class="upload-area" id="uploadArea">
+
+                <div class="upload-icon">📁</div>
+
+                <h4>Upload Medical Report</h4>
+
+                <p>
+                    Select a PDF file from your computer
+                </p>
+
+                <input
+                    type="file"
+                    id="pdfInput"
+                    accept=".pdf"
+                    hidden
+                >
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    onclick="document.getElementById('pdfInput').click()"
+                >
+                    Choose PDF
+                </button>
+
+                <p id="fileName" class="file-name"></p>
+
+            </div>
+
+
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+
+            <!-- TEXT INPUT -->
+            <div class="input-group">
+
+                <label for="reportText">
+                    Paste your report text
+                </label>
+
+                <textarea
+                    id="reportText"
+                    placeholder="Example:
+
+Hemoglobin: 12.5 g/dL
+Reference Range: 12-16 g/dL
+
+Glucose: 108 mg/dL
+Reference Range: 70-100 mg/dL
+
+WBC: 7500 cells/µL
+Reference Range: 4000-11000 cells/µL"
+                ></textarea>
+
+            </div>
+
+
+            <!-- SAMPLE REPORT -->
+            <div class="sample-section">
+
+                <button
+                    type="button"
+                    class="text-btn"
+                    onclick="loadSampleReport()"
+                >
+                    🧪 Try Sample Report
+                </button>
+
+            </div>
+
+
+            <!-- ACTION BUTTONS -->
+            <div class="action-buttons">
+
+                <button
+                    type="button"
+                    class="clear-btn"
+                    onclick="clearReport()"
+                >
+                    Clear
+                </button>
+
+                <button
+                    type="button"
+                    class="analyze-btn"
+                    onclick="analyzeReport()"
+                >
+                    ✨ Analyze Report
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= LOADING ================= -->
+        <section
+            id="loadingSection"
+            class="loading-section hidden"
+        >
+
+            <div class="loader"></div>
+
+            <h3>Analyzing your report...</h3>
+
+            <p>
+                AI is preparing a simple explanation.
+            </p>
+
+        </section>
+
+
+        <!-- ================= RESULTS ================= -->
+        <section
+            id="resultsSection"
+            class="results-section hidden"
+        >
+
+            <div class="results-header">
+
+                <div>
+                    <span class="badge">✨ AI Analysis</span>
+
+                    <h2>
+                        Your Report Explained
+                    </h2>
+                </div>
+
+                <div class="result-actions">
+
+                    <button
+                        type="button"
+                        onclick="copyExplanation()"
+                    >
+                        📋 Copy
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="downloadExplanation()"
+                    >
+                        ⬇️ Download
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- SUMMARY -->
+            <div class="result-card summary-card">
+
+                <h3>📌 Simple Summary</h3>
+
+                <div id="summary">
+                    Your report summary will appear here.
+                </div>
+
+            </div>
+
+
+            <!-- TEST RESULTS -->
+            <div class="result-card">
+
+                <div class="result-card-title">
+
+                    <div>
+                        <h3>🧪 Test Results</h3>
+
+                        <p>
+                            Values found in your report
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="testResults"
+                    class="test-results"
+                >
+                    <!-- Test cards will be created by JavaScript -->
+                </div>
+
+            </div>
+
+
+            <!-- IMPORTANT OBSERVATIONS -->
+            <div class="result-card">
+
+                <h3>⚠️ Important Observations</h3>
+
+                <div id="observations">
+                    No observations available yet.
+                </div>
+
+            </div>
+
+
+            <!-- FULL EXPLANATION -->
+            <div class="result-card">
+
+                <h3>💡 Detailed Explanation</h3>
+
+                <div
+                    id="fullExplanation"
+                    class="explanation"
+                >
+                    Detailed explanation will appear here.
+                </div>
+
+            </div>
+
+
+            <!-- ASK AI -->
+            <div class="result-card question-card">
+
+                <div class="section-title">
+
+                    <div class="title-icon">
+                        💬
+                    </div>
+
+                    <div>
+                        <h3>Ask About Your Report</h3>
+
+                        <p>
+                            Ask questions based on the uploaded report
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="question-input">
+
+                    <input
+                        type="text"
+                        id="questionInput"
+                        placeholder="Example: What does my glucose result mean?"
+                    >
+
+                    <button
+                        type="button"
+                        onclick="askQuestion()"
+                    >
+                        Ask
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="questionAnswer"
+                    class="question-answer hidden"
+                ></div>
+
+            </div>
+
+
+            <!-- DISCLAIMER -->
+            <div class="disclaimer">
+
+                <strong>⚕️ Medical Disclaimer</strong>
+
+                <p>
+                    This application is designed for educational and
+                    informational purposes only. It does not provide
+                    medical diagnosis, treatment, or prescriptions.
+                    Always consult a qualified healthcare professional
+                    for medical decisions.
+                </p>
+
+            </div>
+
+
+            <!-- NEW REPORT -->
+            <button
+                type="button"
+                class="new-report-btn"
+                onclick="clearReport()"
+            >
+                🔄 Analyze Another Report
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+
+        <p>
+            Medical Report Explainer © 2026
+        </p>
+
+        <p>
+            Built with HTML, CSS, JavaScript, PDF.js & Gemini AI
+        </p>
+
+    </footer>
+
+
+    <!-- Main JavaScript -->
+    <script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+# API keys and environment files
+.env
+.env.*
+*.env
+
+# VS Code
+.vscode/
+
+# Operating system files
+Thumbs.db
+.DS_Store
